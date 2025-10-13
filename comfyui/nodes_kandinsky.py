@@ -189,6 +189,7 @@ class Kandinsky5Generate(ComfyNodeABC):
                 "length": ("INT", {"default": 121, "min": 5, "max": 241, "tooltip": "lenght of video."}),
                 "cfg": ("FLOAT", {"default": 5.0, "min": 0.0, "max": 100.0, "step":0.1, "round": 0.01, "tooltip": "The Classifier-Free Guidance scale balances creativity and adherence to the prompt. Higher values result in images more closely matching the prompt however too high values will negatively impact quality."}),
                 "scheduler_scale":("FLOAT", {"default": 10.0, "min": 1.0, "max": 25.0, "step":0.1, "round": 0.01, "tooltip": "scheduler scale"}),
+                "precision": (["float16", "bfloat16"], {"default": "bfloat16"}),
                 "positive_emb": ("CONDITION", {"tooltip": "The conditioning describing the attributes you want to include in the image."}),
                 "positive_clip": ("CONDITION", {"tooltip": "The conditioning describing the attributes you want to exclude from the image."}),
                 "negative_emb": ("CONDITION", {"tooltip": "The conditioning describing the attributes you want to include in the image."}),
@@ -202,11 +203,12 @@ class Kandinsky5Generate(ComfyNodeABC):
     CATEGORY = "sampling"
     DESCRIPTION = "Uses the provided model, positive and negative conditioning to denoise the latent image."
 
-    def sample(self, model, config, steps, width, height, length, cfg, positive_emb, positive_clip, negative_emb, negative_clip, scheduler_scale):
+    def sample(self, model, config, steps, width, height, length, cfg, precision, positive_emb, positive_clip, negative_emb, negative_clip, scheduler_scale):
         bs = 1
         device = 'cuda:0'
         model = model.to(device)
         patch_size = (1, 2, 2)
+        autocast_type = torch.bfloat16 if precision=='bfloat16' else torch.float16 
         dim = config.model.dit_params.in_visual_dim
         length, height, width = 1 + (length - 1)//4, height // 8, width // 8
         bs_text_embed, text_cu_seqlens = positive_emb
@@ -222,7 +224,7 @@ class Kandinsky5Generate(ComfyNodeABC):
         text_rope_pos = torch.cat([torch.arange(end) for end in torch.diff(text_cu_seqlens).cpu()])
         null_text_rope_pos = torch.cat([torch.arange(end) for end in torch.diff(null_text_cu_seqlens).cpu()])
         with torch.no_grad():
-            with torch.autocast(device_type='cuda', dtype=torch.bfloat16):
+            with torch.autocast(device_type='cuda', dtype=autocast_type):
                 latent_visual = generate(
                     model, device, (bs * length, height, width, dim), steps, 
                     text_embed, null_embed,
@@ -250,7 +252,7 @@ class Kandinsky5VAEDecode(ComfyNodeABC):
         device = 'cuda:0'
         model = model.to(device)
         with torch.no_grad():
-            with torch.autocast(device_type='cuda', dtype=torch.bfloat16):
+            with torch.autocast(device_type='cuda', dtype=torch.float16):
                 bs = 1
                 images = latent.reshape(bs, -1, latent.shape[-3], latent.shape[-2], latent.shape[-1])# bs, t, h, w, c
                 # shape for decode: bs, c, t, h, w
