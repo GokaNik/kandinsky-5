@@ -605,7 +605,7 @@ out = pipe(
 ```
 
 
-Please, refer to [inference_example.ipynb](inference_example.ipynb)/[inference_example_i2v.ipynb](inference_example_i2v.ipynb)/[inference_example_i2v.ipynb](inference_example_t2i.ipynb) notebooks for more usage details.
+Please, refer to [examples](examples) folder for more examples in various notebooks.
 
 ### Distributed Inference
 
@@ -782,3 +782,4 @@ We gratefully acknowledge the open-source projects and research that made Kandin
 - [ComfyUI](https://github.com/comfyanonymous/ComfyUI) — for integration into node-based workflows.  
 
 We deeply appreciate the contributions of these communities and researchers to the open-source ecosystem.
+
