@@ -33,7 +33,7 @@ def quant_mpt(model,mode = str):
 
         "algorithm": "max",
     }
-    #PTQ
+    # PTQ
     model = mtq.quantize(model, config)
 
     mtq.print_quant_summary(model)
@@ -41,7 +41,7 @@ def quant_mpt(model,mode = str):
     ccfg = CompressConfig()
     ccfg.compress = {"default": True}
     compress(model, ccfg)      
-    mto.save(model, "K5Pro_nvfp4.pth") #Сохраняем веса
+    mto.save(model, "K5Pro_nvfp4.pth") # Сохраняем веса
 
     print("Real-quantized?", is_real_quantized(model))
 
@@ -51,13 +51,13 @@ if __name__ == "__main__":
 
     pipe = get_T2V_pipeline(
         device_map={"dit": "cuda:0", "vae": "cuda:0", "text_embedder": "cuda:0"},
-        conf_path="/data/igor/kandinsky-5/configs/k5_pro_t2v_5s_sft_sd.yaml",
+        conf_path="/kandinsky-5/configs/k5_pro_t2v_5s_sft_sd.yaml",
         model_type="base"
     ) 
 
     # pipe = get_I2V_pipeline(
     #     device_map={"dit": "cuda:0", "vae": "cuda:0", "text_embedder": "cuda:0"},
-    #     conf_path="/data/igor/kandinsky-5/configs/k5_pro_i2v_5s_sft_sd.yaml",
+    #     conf_path="kandinsky-5/configs/k5_pro_i2v_5s_sft_sd.yaml",
     #     model_type="base"
     # ) 
 

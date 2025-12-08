@@ -53,7 +53,7 @@ def get_T2V_pipeline(
     text_token_padding: bool = False,
     attention_engine: str = "auto",
     model_type: str = "base",  # "base" or "quantized"
-    quantized_model_path: str = "/data/igor/kandinsky-5-orig/K5Pro_nvfp4_2.pth",  
+    quantized_model_path: str = "kandinsky-5/K5Pro_nvfp4.pth",  # Путь к квантованным весам
 ) -> Kandinsky5T2VPipeline:
     if not isinstance(device_map, dict):
         device_map = {"dit": device_map, "vae": device_map, "text_embedder": device_map}
