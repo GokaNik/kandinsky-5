@@ -57,7 +57,7 @@ if __name__ == "__main__":
 
     # pipe = get_I2V_pipeline(
     #     device_map={"dit": "cuda:0", "vae": "cuda:0", "text_embedder": "cuda:0"},
-    #     conf_path="kandinsky-5/configs/k5_pro_i2v_5s_sft_sd.yaml",
+    #     conf_path="/kandinsky-5/configs/k5_pro_i2v_5s_sft_sd.yaml",
     #     model_type="base"
     # ) 
 
