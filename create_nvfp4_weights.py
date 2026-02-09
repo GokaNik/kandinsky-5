@@ -29,6 +29,15 @@ def quant_mpt(model,mode = str):
                 "*input_quantizer": {"enable": False},
             },
             "*visual_embeddings.in_layer*": {"enable": False}, # Отключение квантования для visual_embeddings
+            "*time_embeddings*": {"enable": False},
+            "*text_embeddings*": {"enable": False},
+            "*text_embeddings.in_layer*": {"enable": False},
+            "*out_layer.modulation.out_layer*": {"enable": False},
+            "*out_layer.out_layer*": {"enable": False},
+            "*visual_transformer_blocks.*.feed_forward.out_layer.weight_quantizer*": {"num_bits": (4, 3), "axis": None},
+            "*visual_transformer_blocks.*.self_attention.out_layer.weight_quantizer": {"num_bits": (4, 3), "axis": None}, 
+            "*visual_transformer_blocks.*.cross_attention.out_layer.weight_quantizer": {"num_bits": (4, 3), "axis": None}, 
+            "*visual_transformer_blocks.*.cross_attention.to_key.weight_quantizer": {"num_bits": (4, 3), "axis": None}, 
         },
 
         "algorithm": "max",
